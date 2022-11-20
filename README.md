@@ -12,7 +12,7 @@ Live Demo: [小綠簽](https://meijun17.github.io/the_f2e_4th_week2/)
 
 # 使用技術
 
-SCSS、JQuery
+SCSS、jQuery
 
 # 使用套件
 
