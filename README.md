@@ -1,6 +1,6 @@
-# 2022 F2E Week-2 | 活動網站設計
+# 2022 F2E Week-2 | 今晚，我想來點點簽
 
-透過 Vue 實作 The F2E 4th Week-1 活動網站設計。
+UI 設計師 - [K-T](https://2022.thef2e.com/users/12061579703802991521)
 
 設計稿連結：[Link](https://www.figma.com/file/6ZjDFQSrwRy6OUAXDmJNhz/%E5%B0%8F%E7%B6%A0%E7%B0%BD?t=XXZRjC1EXajwiEtG-0)
 
