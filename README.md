@@ -4,7 +4,7 @@
 
 設計稿連結：[Link](https://www.figma.com/file/6ZjDFQSrwRy6OUAXDmJNhz/%E5%B0%8F%E7%B6%A0%E7%B0%BD?t=XXZRjC1EXajwiEtG-0)
 
-Live Demo: [The F2E 活動網站設計](https://meijun17.github.io/the_f2e_4th_week2/)
+Live Demo: [小綠簽](https://meijun17.github.io/the_f2e_4th_week2/)
 
 # 作品說明
 
