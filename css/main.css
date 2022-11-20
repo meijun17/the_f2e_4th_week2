@@ -262,6 +262,10 @@ a {
   max-width: 1280px;
   margin: 0 auto;
 }
+.container footer {
+  position: absolute;
+  right: 18px;
+}
 
 .plant {
   position: absolute;
@@ -298,7 +302,7 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: calc(100% - 89px);
+  height: calc(100% - 89px - 20px);
   margin: 0 auto;
 }
 .main .content {
