@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta
+        http-equiv="X-UA-Compatible"
+        content="IE=edge"
+    >
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+    <!-- Material Icon -->
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0"
+    />
+    <link
+        rel="stylesheet"
+        href="./css/main.css"
+    >
+    <title>小綠簽</title>
+</head>
+
+<body>
+    <div class="bg-color-gray signpdf">
+        <div class="loading bg-color-gray">
+            <div
+                id='lottie'
+                class="lottie"
+            ></div>
+            <p>簽名優化中...</p>
+        </div>
+        <div class="downloadOk">
+            <div
+                id='downloadOk'
+                class="icon-downloadOk"
+            ></div>
+            <p class="">下載成功</p>
+            <a
+                href="index.html"
+                class="btn-primary"
+            >回首頁</a>
+        </div>
+        <div class="h-100">
+            <div class="container">
+                <div class="header">
+                    <a
+                        class="logo"
+                        href="/"
+                    >
+                        <h1><img
+                                src="./images/logo.png"
+                                alt="logo"
+                            /></h1>
+                    </a>
+                </div>
+            </div>
+            <div class="pdf__content">
+                <canvas id="canvas"> </canvas>
+            </div>
+            <div class="toolbar">
+                <div class="container toolbar__content">
+                    <div class="adjustment__btns">
+                        <span class="material-symbols-outlined page-icon">
+                            chevron_left
+                        </span>
+                        <span> 1 </span>
+                        <span class="material-symbols-outlined page-icon">
+                            chevron_right
+                        </span>
+                    </div>
+                    <div class="adjustment__btns">
+                        <button
+                            type="button"
+                            class="zoom-icon"
+                        >
+                            <img
+                                src="./images//zoom-in.png"
+                                alt="toolbar-icon"
+                            >
+                        </button>
+                        <span>100%</span>
+                        <button
+                            type="button"
+                            class="zoom-icon"
+                        >
+                            <img
+                                src="./images//zoom-out.png"
+                                alt="toolbar-icon"
+                            >
+                        </button>
+                    </div>
+                    <ul class="btns add-items-btns">
+                        <li
+                            class="btn"
+                            id="sign-toggle"
+                        >
+                            <button
+                                type="button"
+                                class="btn__icon"
+                            >
+                                <img
+                                    src="./images/icon-pen.png"
+                                    alt="toolbar-icon"
+                                >
+                            </button>
+                            <p class="btn__text">簽名</p>
+                        </li>
+                        <li class="btn">
+                            <button
+                                type="button"
+                                class="btn__icon"
+                            >
+                                <img
+                                    src="./images/icon-check.png"
+                                    alt="toolbar-icon"
+                                >
+                            </button>
+                            <p class="btn__text">勾選</p>
+                        </li>
+                        <li class="btn">
+                            <button
+                                type="button"
+                                class="btn__icon"
+                            >
+                                <img
+                                    src="./images/icon-date.png"
+                                    alt="toolbar-icon"
+                                >
+                            </button>
+                            <p class="btn__text">日期</p>
+                        </li>
+                        <li class="btn">
+                            <button
+                                type="button"
+                                class="btn__icon"
+                            >
+                                <img
+                                    src="./images/icon-text.png"
+                                    alt="toolbar-icon"
+                                >
+                            </button>
+                            <p class="btn__text">插入文字</p>
+                        </li>
+                    </ul>
+                    <button
+                        type="button"
+                        class="btn-primary"
+                        id="submit"
+                    >完成簽署</button>
+                    <button
+                        type="button"
+                        class="btn-primary"
+                        id="save"
+                        style="display: none;"
+                    >儲存</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- modal -->
+    <div
+        id="sign-toggle"
+        class="sign__toggle card"
+    >
+        <p>請選擇簽名</p>
+        <ul class="signs__list">
+            <li class="signs__list__item">
+                <div class="signImgBox">
+                    <img class="signImg" />
+                </div>
+                <img
+                    src="./images//trash_can.png"
+                    alt="icon-delete"
+                    class="icon-delete"
+                />
+            </li>
+        </ul>
+        <a href="./signPage.html">+ 新增簽名</a>
+    </div>
+    <div class="mask"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.9.6/lottie.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://unpkg.com/fabric@latest/dist/fabric.js"></script>
+    <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
+    <script src="./js/animation.js"></script>
+
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = "https://mozilla.github.io/pdf.js/build/pdf.worker.js";
+        const file = localStorage.getItem("file");
+
+        async function printPDF(data) {
+            const pdfDoc = await pdfjsLib.getDocument({ data }).promise;
+
+            const pdfPage = await pdfDoc.getPage(1);
+            const viewport = pdfPage.getViewport({ scale: window.devicePixelRatio });
+
+            const canvas = document.createElement("canvas");
+            const context = canvas.getContext("2d");
+
+            // 控制顯示PDF的寬高
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+            const renderContext = {
+                canvasContext: context,
+                viewport,
+            };
+
+            const renderTask = pdfPage.render(renderContext);
+            // 回傳做好的canvas
+            return renderTask.promise.then(() => canvas);
+        }
+
+        async function pdfToImage(pdfData) {
+            const scale = 1 / window.devicePixelRatio;
+            return new fabric.Image(pdfData, {
+                scaleX: scale,
+                scaleY: scale,
+            });
+        }
+
+        const canvas = new fabric.Canvas("canvas");
+
+        $(document).ready(async function () {
+            canvas.requestRenderAll();
+            const pdfData = await printPDF(file);
+            const pdfImage = await pdfToImage(pdfData);
+
+            // 調整canvas大小
+            canvas.setWidth(pdfImage.width / window.devicePixelRatio);
+            canvas.setHeight(pdfImage.height / window.devicePixelRatio);
+            canvas.setBackgroundImage(pdfImage, canvas.renderAll.bind(canvas));
+        })
+
+
+        // 簽名檔
+        const sign = document.querySelector(".signImg");
+        let signsNum = 0;
+
+        // 若 localStorage 有資料才放入
+        if (localStorage.getItem("img")) {
+            sign.src = localStorage.getItem("img");
+        }
+
+        // sign加入canvas
+        function addSign(imgURL) {
+            fabric.Image.fromURL(imgURL, function (image) {
+                // 設定簽名出現的位置及大小，後續可調整
+                image.top = 200;
+                image.scaleX = 0.5;
+                image.scaleY = 0.5;
+                canvas.add(image);
+            });
+        }
+
+        sign.addEventListener("click", () => {
+            if (!sign.src) return;
+            signsNum += 1;
+            addSign(sign.src);
+            $(".sign__toggle,.mask").css("display", "none");
+        });
+
+
+
+        $("#sign-toggle").click(() => {
+            $(".sign__toggle,.mask").css("display", "block");
+        });
+
+        $("#submit").click(() => {
+            if (signsNum == 0) {
+                alert("請置入簽名後再完成簽署");
+            } else {
+                $("#submit").css("display", "none");
+                $(".add-items-btns").css("display", "none");
+                $("#save").css("display", "block");
+            }
+        })
+
+        $("#save").click(() => {
+            const pdf = new jsPDF();
+            const image = canvas.toDataURL("image/png");
+            const width = pdf.internal.pageSize.width;
+            const height = pdf.internal.pageSize.height;
+            pdf.addImage(image, "png", 0, 0, width, height);
+            pdf.save("download.pdf");
+
+            $(".pdf__content").hide();
+            $(".downloadOk").show();
+            var animation_downloadOK = bodymovin.loadAnimation({
+                container: document.getElementById("downloadOk"), // Required
+                path: "./images/ok.json", // Required
+                renderer: "svg", // Required
+                loop: true, // Optional
+                autoplay: true, // Optional
+                name: "downloadOk", // Name for future reference. Optional.
+            });
+
+        })
+    </script>
+</body>
+
+</html>

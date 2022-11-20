@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta
+        http-equiv="X-UA-Compatible"
+        content="IE=edge"
+    >
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+    <link
+        rel="stylesheet"
+        href="./css/main.css"
+    >
+    <title>小綠簽</title>
+</head>
+
+<body>
+    <div class="container h-100">
+        <section class="header">
+            <a
+                class="logo"
+                href="/"
+            >
+                <h1><img
+                        src="./images/logo.png"
+                        alt="logo"
+                    /></h1>
+            </a>
+            <button
+                type="button"
+                class="btn-primary-outline"
+            >歷史紀錄</button>
+        </section>
+        <section class="main">
+            <div class="content">
+                <div class="content__intro">
+                    <p class="content__intro__icon">免費試用版</p>
+                    <div class="">
+                        <h2 class="content__intro__title">小綠簽</h2>
+                        <p class="content__intro__des">
+                            護樹、永續、減碳的綠色生活 <br />
+                            響應環保無紙化電子簽署， <br />
+                            省時便利又環保。
+                        </p>
+                    </div>
+                </div>
+                <div class="content__documentArea">
+                    <img
+                        class="content__documentArea__img"
+                        src="./images/document.png"
+                        alt="document"
+                    />
+                    <div class="content__documentArea__Upload">
+                        <label
+                            for="file-upload"
+                            class="btn-primary"
+                        > 上傳檔案 </label>
+                        <input
+                            id="file-upload"
+                            type="file"
+                            accept="application/pdf"
+                            class="input-upload"
+                        />
+                    </div>
+                    <div class="content__documentArea__note">
+                        <p class="">或拖移檔案到此處</p>
+                        <p class="text-primary">(限10MB 內的PDF或JPG檔)</p>
+                    </div>
+                </div>
+                <div class="group position-absolute">
+                    <img
+                        class="group__people1 position-absolute"
+                        src="./images/group_people_1.png"
+                        alt="group_people"
+                    />
+                    <img
+                        class="group__people2 position-absolute"
+                        src="./images/group_people_2.png"
+                        alt="group_people"
+                    />
+                    <img
+                        class="group__people3 position-absolute"
+                        src="./images/group_people_3.png"
+                        alt="group_people"
+                    />
+                    <img
+                        class="group__people4 position-absolute"
+                        src="./images/group_people_4.png"
+                        alt="group_people"
+                    />
+                    <img
+                        class="group__people5 position-absolute"
+                        src="./images/group_people_5.png"
+                        alt="group_people"
+                    />
+                    <img
+                        class="group__people6 position-absolute"
+                        src="./images/group_people_6.png"
+                        alt="group_people"
+                    />
+                    <img
+                        class="group__people7 position-absolute"
+                        src="./images/group_people_7.png"
+                        alt="group_people"
+                    />
+                </div>
+            </div>
+        </section>
+    </div>
+    <img
+        class="plant plant_left"
+        src="./images/plant_left.png"
+        alt="plant"
+    />
+    <img
+        class="plant plant_right"
+        src="./images/plant_right.png"
+        alt="plant"
+    />
+    <img
+        class="plant plant_grass"
+        src="./images/grass.png"
+        alt="plant"
+    />
+    <script src="https://unpkg.com/fabric@latest/dist/fabric.js"></script>
+    <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
+    <script>
+        const Base64Prefix = "data:application/pdf;base64,";
+        const fileUpload = document.querySelector(".input-upload");
+
+        function readBlob(blob) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.addEventListener("load", () => resolve(reader.result));
+                reader.addEventListener("error", reject);
+                reader.readAsDataURL(blob);
+            })
+        }
+
+        async function printPDF(pdfData) {
+            pdfData = await readBlob(pdfData);
+            const data = atob(pdfData.substring(Base64Prefix.length));
+            localStorage.setItem('file', data);
+            window.location.href = "signPage.html";
+        }
+
+        fileUpload.addEventListener("change", (e) => {
+            printPDF(e.target.files[0]);
+        })
+    </script>
+</body>
+
+</html>
