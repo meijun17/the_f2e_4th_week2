@@ -168,18 +168,82 @@
     >
         <p>請選擇簽名</p>
         <ul class="signs__list">
-            <li class="signs__list__item">
+            <li
+                class="signs__list__item"
+                id="sign1"
+            >
                 <div class="signImgBox">
                     <img class="signImg" />
                 </div>
                 <img
-                    src="./images//trash_can.png"
+                    src="./images/trash_can.png"
                     alt="icon-delete"
                     class="icon-delete"
                 />
             </li>
         </ul>
-        <a href="./signPage.html">+ 新增簽名</a>
+        <button
+            type="button"
+            class="add-sign-btn"
+            id="add-sign-btn"
+        >
+            + 新增簽名
+        </button>
+    </div>
+
+    <div
+        id="sign-add-toggle"
+        class="sign__add__toggle card"
+    >
+        <div class="sign__content">
+            <div class="tabs">
+                <button
+                    type="button"
+                    class="tab active"
+                    id="hand-writing-tab"
+                >手寫簽名</button>
+                <button
+                    type="button"
+                    class="tab"
+                    id="import-sign-tab"
+                >匯入簽名檔</button>
+            </div>
+            <!-- 手寫簽名 -->
+            <div class="sign-area">
+                <div class="hand-writing-box">
+                    <div class="d-flex align-item-center justify-content-between">
+                        <ul class="sign__colors">
+                            <li class="color color-black active"></li>
+                            <li class="color color-blue"></li>
+                            <li class="color color-red"></li>
+                        </ul>
+                        <button
+                            type="button"
+                            id="clear-btn"
+                            class="btn-primary-outline"
+                        >清除</button>
+                    </div>
+                    <canvas
+                        id="writing-canvas"
+                        class="canvas"
+                        width="590"
+                        height="224"
+                    ></canvas>
+                </div>
+            </div>
+            <div class="btns">
+                <button
+                    type="button"
+                    id="modal-cancel-btn"
+                    class="btn-primary-outline"
+                >取消</button>
+                <button
+                    type="button"
+                    id="create-btn"
+                    class="btn-primary"
+                >建立簽名</button>
+            </div>
+        </div>
     </div>
     <div class="mask"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.9.6/lottie.min.js"></script>
@@ -188,9 +252,10 @@
     <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
     <script src="./js/animation.js"></script>
+    <script src="./js/sign.js"></script>
 
     <script>
-        pdfjsLib.GlobalWorkerOptions.workerSrc = "https://mozilla.github.io/pdf.js/build/pdf.worker.js";
+        let isSignPDF = true;
         const file = localStorage.getItem("file");
 
         async function printPDF(data) {
@@ -223,27 +288,49 @@
             });
         }
 
-        const canvas = new fabric.Canvas("canvas");
+        const fabricCanvas = new fabric.Canvas("canvas");
 
         $(document).ready(async function () {
-            canvas.requestRenderAll();
+            getSignList();
+            fabricCanvas.requestRenderAll();
             const pdfData = await printPDF(file);
             const pdfImage = await pdfToImage(pdfData);
 
             // 調整canvas大小
-            canvas.setWidth(pdfImage.width / window.devicePixelRatio);
-            canvas.setHeight(pdfImage.height / window.devicePixelRatio);
-            canvas.setBackgroundImage(pdfImage, canvas.renderAll.bind(canvas));
+            fabricCanvas.setWidth(pdfImage.width / window.devicePixelRatio);
+            fabricCanvas.setHeight(pdfImage.height / window.devicePixelRatio);
+            fabricCanvas.setBackgroundImage(pdfImage, fabricCanvas.renderAll.bind(fabricCanvas));
         })
 
 
         // 簽名檔
         const sign = document.querySelector(".signImg");
         let signsNum = 0;
+        let length = $(".signs__list").length;
 
-        // 若 localStorage 有資料才放入
-        if (localStorage.getItem("img")) {
-            sign.src = localStorage.getItem("img");
+        function getSignList(value) {
+            if (value) {
+                $(".signs__list").append(`
+                <li class="signs__list__item" id="sign${length + 1}">
+                    <div class="signImgBox">
+                        <img
+                            src="${value}"
+                            class="signImg"
+                        />
+                    </div>
+                    <img
+                        src="./images/trash_can.png"
+                        alt="icon-delete"
+                        class="icon-delete"
+                    />
+                </li>
+                `)
+                length += 1;
+                signsNum += 1;
+            } else if (localStorage.getItem("signList")) {
+                // 若 localStorage 有資料才放入
+                sign.src = localStorage.getItem("signList");
+            }
         }
 
         // sign加入canvas
@@ -253,7 +340,7 @@
                 image.top = 200;
                 image.scaleX = 0.5;
                 image.scaleY = 0.5;
-                canvas.add(image);
+                fabricCanvas.add(image);
             });
         }
 
@@ -282,24 +369,52 @@
 
         $("#save").click(() => {
             const pdf = new jsPDF();
-            const image = canvas.toDataURL("image/png");
+            const image = fabricCanvas.toDataURL("image/png");
             const width = pdf.internal.pageSize.width;
             const height = pdf.internal.pageSize.height;
             pdf.addImage(image, "png", 0, 0, width, height);
             pdf.save("download.pdf");
 
+            $(".toolbar").css("display", "none");
             $(".pdf__content").hide();
             $(".downloadOk").show();
-            var animation_downloadOK = bodymovin.loadAnimation({
-                container: document.getElementById("downloadOk"), // Required
-                path: "./images/ok.json", // Required
-                renderer: "svg", // Required
-                loop: true, // Optional
-                autoplay: true, // Optional
-                name: "downloadOk", // Name for future reference. Optional.
-            });
-
         })
+
+
+
+
+        // 建立簽名檔modal
+        $("#add-sign-btn").click(() => {
+            $(".sign__add__toggle").toggleClass("active");
+            reset();
+        })
+
+        $("#cancel-btn,#create-btn").click(() => {
+            $(".sign__add__toggle").toggleClass("active");
+        })
+
+
+        // 刪除sign
+        $(".signs__list").click(function () {
+            let length = $(this).children().length;
+            for (let i = 0; i <= length; i++) {
+                $(".signs__list").on("click", `#sign${i} .icon-delete`, function () {
+                    $(this).parent().remove()
+                });
+            }
+            for (let i = 0; i <= length; i++) {
+                $(".signs__list").on("click", `#sign${i} .signImg`, function () {
+                    addSign(this.src);
+                    $(".sign__toggle,.mask").css("display", "none");
+                });
+            }
+        })
+
+
+
+
+
+
     </script>
 </body>
 

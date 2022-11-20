@@ -163,6 +163,18 @@ a {
   color: #1c8b6a;
 }
 
+.d-flex {
+  display: flex;
+}
+
+.align-item-center {
+  align-items: center;
+}
+
+.justify-content-between {
+  justify-content: space-between;
+}
+
 .btn-primary-outline {
   background-color: white;
   border: 2px solid #1c8b6a;
@@ -499,19 +511,20 @@ a {
   font-size: 18px;
   font-weight: 400;
 }
-.sign__toggle a {
+.sign__toggle .add-sign-btn {
+  background: transparent;
+  border: none;
   color: #1c8b6a;
-  text-decoration: none;
+  cursor: pointer;
   font-size: 16px;
   font-weight: 400;
 }
-
-.signs__list__item {
+.sign__toggle .signs__list__item {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-.signs__list__item .signImgBox {
+.sign__toggle .signs__list__item .signImgBox {
   width: 271px;
   height: 61px;
   border-radius: 16px;
@@ -523,14 +536,24 @@ a {
   align-items: center;
   cursor: pointer;
 }
-.signs__list__item .signImgBox img {
+.sign__toggle .signs__list__item .signImgBox img {
   width: inherit;
   height: inherit;
   -o-object-fit: cover;
      object-fit: cover;
 }
-.signs__list__item .icon-delete {
+.sign__toggle .signs__list__item .icon-delete {
   cursor: pointer;
+}
+
+.sign__add__toggle {
+  width: 631px;
+  height: auto;
+  background-color: #f0f0f0;
+  display: none;
+}
+.sign__add__toggle.active {
+  display: block;
 }
 
 .toolbar {

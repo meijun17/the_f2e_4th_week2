@@ -7,6 +7,15 @@ const animation = bodymovin.loadAnimation({
   name: "loading",
 });
 
+var animation_downloadOK = bodymovin.loadAnimation({
+  container: document.getElementById("downloadOk"), // Required
+  path: "./images/ok.json", // Required
+  renderer: "svg", // Required
+  loop: true, // Optional
+  autoplay: true, // Optional
+  name: "downloadOk", // Name for future reference. Optional.
+});
+
 $(document).ready(function () {
   $(".sign__content,.pdf__content,.downloadOk").hide();
   $(".loading,.plant").fadeOut(2000);

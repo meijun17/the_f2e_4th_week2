@@ -256,39 +256,50 @@
     font-size: 18px;
     font-weight: 400;
   }
-  a {
+  .add-sign-btn {
+    background: transparent;
+    border: none;
     color: #1c8b6a;
-    text-decoration: none;
+    cursor: pointer;
     font-size: 16px;
     font-weight: 400;
   }
-}
-
-.signs__list {
-  &__item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    .signImgBox {
-      width: 271px;
-      height: 61px;
-      border-radius: 16px;
-      background-color: #ffffff;
-      margin-top: 12px;
-      margin-bottom: 12px;
+  .signs__list {
+    &__item {
       display: flex;
-      justify-content: center;
       align-items: center;
-      cursor: pointer;
-      img {
-        width: inherit;
-        height: inherit;
-        object-fit: cover;
+      justify-content: space-between;
+      .signImgBox {
+        width: 271px;
+        height: 61px;
+        border-radius: 16px;
+        background-color: #ffffff;
+        margin-top: 12px;
+        margin-bottom: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        img {
+          width: inherit;
+          height: inherit;
+          object-fit: cover;
+        }
+      }
+      .icon-delete {
+        cursor: pointer;
       }
     }
-    .icon-delete {
-      cursor: pointer;
-    }
+  }
+}
+
+.sign__add__toggle {
+  width: 631px;
+  height: auto;
+  background-color: #f0f0f0;
+  display: none;
+  &.active {
+    display: block;
   }
 }
 
